@@ -12,9 +12,6 @@
     ],
     "require": {
         "php": "^5.0.0",
-        "illuminate/support": ">=5.0",
-        "illuminate/database": ">=5.0",
-        "illuminate/http": ">=5.0",
         "league/csv": "^7.0"
     },
     "extra": {
