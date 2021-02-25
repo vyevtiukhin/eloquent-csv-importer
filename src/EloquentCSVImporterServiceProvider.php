@@ -13,7 +13,7 @@ class EloquentCSVImporterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishMigrations();
+        //$this->publishMigrations();
     }
 
     /**
