@@ -101,7 +101,9 @@ class CSVDefinition extends Model
 
         $toKey = $mappings[$from];
 
-        if (!$this->getMappable()::getCSVMappableColumns()->contains($toKey)) {
+        $mappable = $this->getMappable();
+
+        if (!$mappable::getCSVMappableColumns()->contains($toKey)) {
             throw new UnknownCSVMappableColumnException('Unknown model mapping: '.$toKey);
         }
 
@@ -135,7 +137,7 @@ class CSVDefinition extends Model
      * Map either a file or a CSV string to an array of models
      * @param File||String $data
      * @param array $updateWithColumns
-     * @return Collection
+     * @return array
      * @throws UnknownCSVMappableColumnException
      * @throws Exception
      */
@@ -143,24 +145,43 @@ class CSVDefinition extends Model
     {
         $csvParser = new CSVParser($data);
         $parserIterator = $csvParser->getIterator();
-        $mappedModels = collect();
+//        $mappedModels = collect();
+        $mappedModels = [];
         $dataItemManipulator = $this->dataItemManipulator;
 
         $mappings = $this->getMappings();
+
         $mappingKeys = array_keys($mappings);
 
+        $firstRow = true;
+        $csvMapping = [];
         foreach ($parserIterator as $parsedRow) {
-            //on the row, grab the values inside of the search columns
-            $model = $this->getModel($parsedRow, $updateWithColumns);
-            foreach ($mappingKeys as $mapFrom) {
-                $CSVValue = $parsedRow[$mapFrom];
-                $toKey = $this->getValidToProperty($mapFrom);
-
-                $CSVValue = $dataItemManipulator($toKey, $CSVValue, $parsedRow);
-
-                $model->setAttribute($toKey, $CSVValue);
+            if($firstRow) {
+                $csvMapping = array_intersect_key(array_flip($parsedRow), array_flip($mappingKeys));
+                $firstRow = false;
+                continue;
             }
-            $mappedModels->push($model);
+
+            //on the row, grab the values inside of the search columns
+//            $model = $this->getModel($parsedRow, $updateWithColumns);
+            $model = [];
+            foreach ($mappingKeys as $mapFrom) {
+                if(isset($csvMapping[$mapFrom])) {
+                    $CSVValue = $parsedRow[$csvMapping[$mapFrom]];
+                    $toKey = $this->getValidToProperty($mapFrom);
+
+                    $CSVValue = $dataItemManipulator($toKey, $CSVValue, $parsedRow);
+                    if(!empty($CSVValue)) {
+//                        $model->setAttribute($toKey, $CSVValue);
+                        $model[$toKey] = $CSVValue;
+                    }
+                    /*if(isset($toKey[$CSVValue])) {
+                        $model->setAttribute($toKey[$CSVValue], $CSVValue);
+                    }*/
+                }
+            }
+//            $mappedModels->push($model);
+            $mappedModels[] = $model;
         }
 
         return $mappedModels;

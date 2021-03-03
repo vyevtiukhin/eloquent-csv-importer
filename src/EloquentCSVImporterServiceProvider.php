@@ -13,7 +13,7 @@ class EloquentCSVImporterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //$this->publishMigrations();
+//        $this->publishMigrations();
     }
 
     /**
@@ -34,7 +34,7 @@ class EloquentCSVImporterServiceProvider extends ServiceProvider
         $stub = __DIR__ . '/Migrations/';
         $target = database_path('migrations') . '/';
         $this->publishes([
-            $stub . 'create_csv_definitions_table.php' => $target . date('Y_m_d_His', time()).'_create_csv_definitions_table.php',
+            $stub . '2021_02_25_105620_create_csv_definitions_table.php' => $target . date('Y_m_d_His', time()).'_create_csv_definitions_table.php',
         ], 'migrations');
     }
 }

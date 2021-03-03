@@ -27,7 +27,7 @@ class CSVParser
             $this->reader = Reader::createFromString($data);
         }
 
-        $this->reader->setHeaderOffset($headerOffset);
+//        $this->reader->setHeaderOffset($headerOffset);
     }
 
     /**
@@ -36,6 +36,7 @@ class CSVParser
      */
     public function getIterator()
     {
-        return $this->reader->getRecords();
+//        return $this->reader->getRecords();
+        return $this->reader->fetchAll();
     }
 }
