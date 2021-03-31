@@ -1,5 +1,5 @@
 {
-    "name": "langleyfoxal/eloquent-csv-importer",
+    "name": "langleyfoxall/eloquent-csv-importer",
     "description": "Easily map CSV files to Eloquent models",
     "type": "library",
     "license": "MIT",
